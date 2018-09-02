@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
@@ -19,4 +19,9 @@ from app.admin import admin as admin_blueprint
 # 第一个参数是蓝图，第二个参数是url地址的前缀。通过地址前缀划分前后台的路由
 app.register_blueprint(home_blueprint)
 app.register_blueprint(admin_blueprint, url_prefix="/admin")
+
+@app.errorhandler(404)
+def page_not_found(error):
+    # 404
+    return render_template("home/404.html"), 404
 

@@ -1,0 +1,22 @@
+<!Doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>404 页面不存在</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+    <link href="{{ url_for('static', filename='404/404.css') }}" rel="stylesheet">
+</head>
+<body>
+<div class="fullScreen" id="fullScreen">
+    <img class="rotating" src="{{ url_for('static', filename='404/spaceman.svg') }}">
+    <div class="pagenotfound-text">
+        <h1>迷失在太空中！</h1>
+        <h2><a href="{{ url_for('home.index') }}">返回首页</a></h2>
+    </div>
+    <canvas id="canvas2d"></canvas>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='404/404.js') }}"></script>
+</body>
+</html>
