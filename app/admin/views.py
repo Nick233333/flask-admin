@@ -1,22 +1,48 @@
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, flash, session, request
 from . import admin
+from app.admin.forms import LoginForm
+from functools import wraps
+from app.models import Admin
 
+
+def admin_login_req(f):
+    # 登录装饰器
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "admin" not in session:
+            return redirect(url_for("admin.login", next=request.url))
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 # 路由定义使用装饰器进行定义
 @admin.route("/")
+@admin_login_req
 def index():
     return render_template("admin/index.html")
 
 
-@admin.route("/login/")
+@admin.route("/login/", methods=["GET", "POST"])
 def login():
     # 后台登录
-    return render_template("admin/login.html")
+    form = LoginForm()
+    if form.validate_on_submit():
+        data = form.data
+        admin = Admin.query.filter_by(name=data["account"]).first()
+        if not admin.check_pwd(data["pwd"]):
+            flash(u"密码错误!", "err")
+            return redirect(url_for("admin.login"))
+        session["admin"] = data["account"]
+        session["admin_id"] = admin.id
+        return redirect(request.args.get("next") or url_for("admin.index"))
+    return render_template("admin/login.html", form=form)
 
 
-@admin.route("/logout/")
+@admin.route("/logout")
 def logout():
     # 后台注销登录
+    session.pop("admin", None)
+    session.pop("admin_id", None)
     return redirect(url_for("admin.login"))
 
 

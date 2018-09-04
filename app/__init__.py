@@ -9,6 +9,7 @@ app.debug = True
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://nick:nick@localhost/flask-movie"
 # 如果设置成 True (默认情况)，Flask-SQLAlchemy 将会追踪对象的修改并且发送信号
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'flask-movie'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
