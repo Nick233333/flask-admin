@@ -1,8 +1,9 @@
 from flask import render_template, url_for, redirect, flash, session, request
 from . import admin
-from app.admin.forms import LoginForm
+from app.admin.forms import LoginForm, TagForm
 from functools import wraps
-from app.models import Admin
+from app.models import Admin, Tag
+from app import db, app
 
 
 def admin_login_req(f):
@@ -14,6 +15,7 @@ def admin_login_req(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
 
 # 路由定义使用装饰器进行定义
 @admin.route("/")
@@ -52,16 +54,69 @@ def pwd():
     return render_template("admin/pwd.html")
 
 
-@admin.route("/tag/add/")
+@admin.route("/tag/add/", methods=["GET", "POST"])
+@admin_login_req
 def tag_add():
-    # 标签添加与编辑
-    return render_template("admin/tag_add.html")
+    # 标签添加
+    form = TagForm()
+    if form.validate_on_submit():
+        data = form.data
+        tag = Tag.query.filter_by(name=data["name"]).count()
+        if tag == 1:
+            flash(u"标签已存在", "err")
+            return redirect(url_for("admin.tag_add"))
+        tag = Tag(
+            name=data["name"]
+        )
+        db.session.add(tag)
+        db.session.commit()
+        flash(u"标签添加成功", "ok")
+        redirect(url_for("admin.tag_add"))
+    return render_template("admin/tag_add.html", form=form)
 
 
-@admin.route("/tag/list/")
-def tag_list():
+@admin.route("/tag/del/<int:id>/", methods=["GET"])
+@admin_login_req
+def tag_del(id=None):
+    # 标签删除
+    tag = Tag.query.filter_by(id=id).first_or_404()
+    db.session.delete(tag)
+    db.session.commit()
+    flash(u"标签<<{0}>>删除成功".format(tag.name), "ok")
+    return redirect(url_for("admin.tag_list", page=1))
+
+
+@admin.route("/tag/edit/<int:id>", methods=["GET", "POST"])
+@admin_login_req
+def tag_edit(id=None):
+    # 标签编辑
+    form = TagForm()
+    form.submit.label.text = u"修改"
+    tag = Tag.query.get_or_404(id)
+    if form.validate_on_submit():
+        data = form.data
+        tag_count = Tag.query.filter_by(name=data["name"]).count()
+        if tag.name != data["name"] and tag_count == 1:
+            flash(u"标签已存在", "err")
+            return redirect(url_for("admin.tag_edit", id=tag.id))
+        tag.name = data["name"]
+        db.session.add(tag)
+        db.session.commit()
+        flash(u"标签修改成功", "ok")
+        redirect(url_for("admin.tag_edit", id=tag.id))
+    return render_template("admin/tag_edit.html", form=form, tag=tag)
+
+
+@admin.route("/tag/list/<int:page>/", methods=["GET"])
+@admin_login_req
+def tag_list(page=None):
     # 标签列表
-    return render_template("admin/tag_list.html")
+    if page is None:
+        page = 1
+    page_data = Tag.query.order_by(
+        Tag.addtime.desc()
+    ).paginate(page=page, per_page=1)
+    return render_template("admin/tag_list.html", page_data=page_data)
 
 
 @admin.route("/movie/add/")

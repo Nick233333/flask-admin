@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>微电影管理系统</title>
+    <title>添加标签微电影管理系统</title>
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="{{ url_for('static', filename='base/images/logo.png') }}">
@@ -307,15 +307,37 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">添加标签</h3>
                         </div>
-                        <form role="form">
+                        <form method="post" role="form">
                             <div class="box-body">
+                                {% for msg in get_flashed_messages(category_filter=["ok"]) %}
+                                    <div class="alert alert-success alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                        </button>
+                                        <h4><i class="icon fa fa-check"></i> 操作成功</h4>
+                                        {{ msg }}
+                                    </div>
+                                {% endfor %}
+                                {% for msg in get_flashed_messages(category_filter=["err"]) %}
+                                    <div class="alert alert-danger alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                        </button>
+                                        <h4><i class="icon fa fa-ban"></i> 操作失败</h4>
+                                        {{ msg }}
+                                    </div>
+                                {% endfor %}
                                 <div class="form-group">
-                                    <label for="input_name">标签名称</label>
-                                    <input type="text" class="form-control" id="input_name" placeholder="请输入标签名称！">
+                                    <label for="input_name">{{ form.name.label }}</label>
+                                    {{ form.name }}
+                                    {% for err in form.name.errors %}
+                                        <div class="col-md-12">
+                                            <p style="color: red">{{ err }}</p>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <div class="box-footer">
-                                <button type="submit" class="btn btn-primary">添加</button>
+                                {{ form.csrf_token }}
+                                {{ form.submit }}
                             </div>
                         </form>
                     </div>

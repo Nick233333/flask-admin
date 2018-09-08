@@ -113,12 +113,12 @@
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="tag_add.html">
+                            <a href="{{ url_for('admin.tag_add') }}">
                                 <i class="fa fa-circle-o"></i> 添加标签
                             </a>
                         </li>
                         <li>
-                            <a href="tag_list.html">
+                            <a href="{{ url_for('admin.tag_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 标签列表
                             </a>
                         </li>
