@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import uuid
 from datetime import datetime
@@ -35,6 +37,10 @@ def check_upload_dir():
         os.chmod(app.config['UPLOAD_DIR'], "rw")
     else:
         pass
+
+def allowed_file(filename):
+    '''判断filename是否有后缀以及后缀是否在app.config['ALLOWED_EXTENSIONS']中'''
+    return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
 # 路由定义使用装饰器进行定义
@@ -146,6 +152,10 @@ def movie_add():
     form = MovieForm()
     if form.validate_on_submit():
         data = form.data
+        res = allowed_file(form.logo.data.filename)
+        if res == False:
+            flash(u"图片类型不支持！", "err")
+            return render_template("admin/movie_add.html", form=form)
         file_url = secure_filename(form.url.data.filename)
         file_logo = secure_filename(form.logo.data.filename)
         check_upload_dir()
@@ -228,6 +238,10 @@ def movie_edit(id=None):
             form.url.data.save(app.config['UPLOAD_DIR'] + movie.url)
         # 上传图片
         if form.logo.data != "":
+            res = allowed_file(form.logo.data.filename)
+            if res == False:
+                flash(u"图片类型不支持！", "err")
+                return render_template("admin/movie_edit.html", form=form, movie=movie)
             file_logo = secure_filename(form.logo.data.filename)
             movie.logo = change_filename(file_logo)
             form.logo.data.save(app.config['UPLOAD_DIR'] + movie.logo)
@@ -253,6 +267,10 @@ def preview_add():
     form = PreviewForm()
     if form.validate_on_submit():
         data = form.data
+        res = allowed_file(form.logo.data.filename)
+        if res == False:
+            flash(u"图片类型不支持！", "err")
+            return render_template("admin/preview_add.html", form=form)
         file_logo = secure_filename(form.logo.data.filename)
         check_upload_dir()
         logo = change_filename(file_logo)
@@ -304,6 +322,10 @@ def preview_edit(id):
     if form.validate_on_submit():
         data = form.data
         if form.logo.data != "":
+            res = allowed_file(form.logo.data.filename)
+            if res == False:
+                flash(u"图片类型不支持！", "err")
+                return render_template("admin/preview_edit.html", form=form, preview=preview)
             file_logo = secure_filename(form.logo.data.filename)
             preview.logo = change_filename(file_logo)
             form.logo.data.save(app.config['UPLOAD_DIR'] + preview.logo)

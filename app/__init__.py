@@ -12,6 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://nick:nick@localhost/fla
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'flask-movie'
 app.config['UPLOAD_DIR'] = os.path.join(os.path.abspath(os.path.dirname(__file__)), "static/uploads/")
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
