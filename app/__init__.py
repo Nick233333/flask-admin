@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -10,6 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://nick:nick@localhost/fla
 # 如果设置成 True (默认情况)，Flask-SQLAlchemy 将会追踪对象的修改并且发送信号
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'flask-movie'
+app.config['UPLOAD_DIR'] = os.path.join(os.path.abspath(os.path.dirname(__file__)), "static/uploads/")
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
