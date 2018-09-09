@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>微电影管理系统</title>
+    <title>修改预告微电影管理系统</title>
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="{{ url_for('static', filename='base/images/logo.png') }}">
@@ -30,7 +30,10 @@
 <div class="wrapper">
     <header class="main-header">
         <a href="index.html" class="logo">
-            <span class="logo-lg">微电影管理系统</span>
+            <span class="logo-mini"><img src="../static/base/images/logo.png"
+                                         style="height:40px;width:40px;">电影系统</span>
+            <span class="logo-lg"><img src="../static/base/images/logo.png"
+                                       style="height:40px;width:40px;">微电影管理系统</span>
         </a>
         <nav class="navbar navbar-static-top">
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -42,15 +45,15 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="../static/admin/dist/img/user2-160x160.jpg"
                                  class="user-image" alt="User Image">
-                            <span class="hidden-xs">admin</span>
+                            <span class="hidden-xs">xxx</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li class="user-header">
                                 <img src="../static/admin/dist/img/user2-160x160.jpg"
                                      class="img-circle" alt="User Image">
                                 <p>
-                                    admin
-                                    <small>2018-09-03</small>
+                                    xxx
+                                    <small>2017-06-01</small>
                                 </p>
                             </li>
                             <li class="user-footer">
@@ -75,7 +78,7 @@
                          alt="User Image">
                 </div>
                 <div class="pull-left info">
-                    <p>用户 admin</p>
+                    <p>用户xxx</p>
                     <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
                 </div>
             </div>
@@ -113,12 +116,12 @@
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="{{ url_for('admin.tag_add') }}">
+                            <a href="tag_add.html">
                                 <i class="fa fa-circle-o"></i> 添加标签
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('admin.tag_list', page=1) }}">
+                            <a href="tag_list.html">
                                 <i class="fa fa-circle-o"></i> 标签列表
                             </a>
                         </li>
@@ -132,12 +135,12 @@
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="{{ url_for('admin.movie_add') }}">
+                            <a href="movie_add.html">
                                 <i class="fa fa-circle-o"></i> 添加电影
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('admin.movie_list', page=1) }}">
+                            <a href="movie_list.html">
                                 <i class="fa fa-circle-o"></i> 电影列表
                             </a>
                         </li>
@@ -151,12 +154,12 @@
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="{{ url_for('admin.preview_add') }}">
+                            <a href="preview_add.html">
                                 <i class="fa fa-circle-o"></i> 添加预告
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('admin.preview_list', page=1) }}">
+                            <a href="preview_list.html">
                                 <i class="fa fa-circle-o"></i> 预告列表
                             </a>
                         </li>
@@ -293,45 +296,51 @@
         <section class="content-header">
             <h1>微电影管理系统</h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
-                <li class="active">控制面板</li>
+                <li><a href="#"><i class="fa fa-dashboard"></i> 预告管理</a></li>
+                <li class="active">修改预告</li>
             </ol>
         </section>
         <section class="content" id="showcontent">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">内存使用率</h3>
+                            <h3 class="box-title">修改预告</h3>
                         </div>
-                        <div class="box-body" id="meminfo" style="height:600px;"></div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">系统设置</h3>
-                        </div>
-                        <form role="form">
-                            <div class="box-body" style="height:600px;">
+                        <form role="form" method="post" enctype="multipart/form-data">
+                            <div class="box-body">
+                                 {% for msg in get_flashed_messages(category_filter=["ok"]) %}
+                                    <div class="alert alert-success alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                        </button>
+                                        <h4><i class="icon fa fa-check"></i> 操作成功</h4>
+                                        {{ msg }}
+                                    </div>
+                                {% endfor %}
                                 <div class="form-group">
-                                    <label for="input_speed">限制速率大小</label>
-                                    <input type="text" class="form-control" id="input_speed" placeholder="请输入限制速率！"
-                                           value="512">
+                                    <label for="input_title">{{ form.title.label }}</label>
+                                    {{ form.title }}
+                                    {% for err in form.title.errors %}
+                                        <div class="col-md-12">
+                                            <p style="color: red">{{ err }}</p>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                                 <div class="form-group">
-                                    <label for="input_mem">限制内存大小</label>
-                                    <input type="text" class="form-control" id="input_mem" placeholder="请输入限制内存！"
-                                           value="10m">
+                                    <label for="input_logo">{{ form.logo.label }}</label>
+                                    {{ form.logo }}
+                                    {% for err in form.logo.errors %}
+                                        <div class="col-md-12">
+                                            <p style="color: red">{{ err }}</p>
+                                        </div>
+                                    {% endfor %}
+                                    <img data-src="holder.js/700x320" style="margin-top:5px;" class="img-responsive"
+                                         alt="">
                                 </div>
-                                <div class="form-group">
-                                    <label for="input_num">限制客户端数量</label>
-                                    <input type="text" class="form-control" id="input_num" placeholder="请输入限制客户端数量！"
-                                           value="4">
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">保存并重启服务</button>
-                                </div>
+                            </div>
+                            <div class="box-footer">
+                                {{ form.csrf_token }}
+                                {{ form.submit }}
                             </div>
                         </form>
                     </div>
@@ -357,38 +366,5 @@
 <script src="//cdn.bootcss.com/holder/2.9.4/holder.min.js"></script>
 <script src="{{ url_for('static', filename='admin/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
 <script src="{{ url_for('static', filename='admin/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js') }}" charset="UTF-8"></script>
-<script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
-<script>
-    var myChart = echarts.init(document.getElementById('meminfo'));
-    option = {
-        backgroundColor: "white",
-        tooltip: {
-            formatter: "{a} <br/>{b} : {c}%"
-        },
-        toolbox: {
-            feature: {
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        series: [{
-            name: '内存使用率',
-            type: 'gauge',
-            detail: {
-                formatter: '{value}%'
-            },
-            data: [{
-                value: 50,
-                name: '内存使用率'
-            }]
-        }]
-    };
-    setInterval(function () {
-        option.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
-        myChart.setOption(option, true);
-    }, 2000);
-
-</script>
-
 </body>
 </html>
