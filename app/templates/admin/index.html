@@ -165,13 +165,13 @@
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-users" aria-hidden="true"></i>
-                        <span>会员管理</span>
+                        <span>用户管理</span>
                         <span class="label label-primary pull-right">1</span>
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="user_list.html">
-                                <i class="fa fa-circle-o"></i> 会员列表
+                            <a href="{{ url_for('admin.user_list', page=1) }}">
+                                <i class="fa fa-circle-o"></i> 用户列表
                             </a>
                         </li>
                     </ul>

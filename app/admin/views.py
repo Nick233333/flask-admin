@@ -8,7 +8,7 @@ from flask import render_template, url_for, redirect, flash, session, request
 from . import admin
 from app.admin.forms import LoginForm, TagForm, MovieForm, PreviewForm
 from functools import wraps
-from app.models import Admin, Tag, Movie, Preview
+from app.models import Admin, Tag, Movie, Preview, User
 from app import db, app
 from werkzeug.utils import secure_filename
 
@@ -37,6 +37,7 @@ def check_upload_dir():
         os.chmod(app.config['UPLOAD_DIR'], "rw")
     else:
         pass
+
 
 def allowed_file(filename):
     '''判断filename是否有后缀以及后缀是否在app.config['ALLOWED_EXTENSIONS']中'''
@@ -337,16 +338,38 @@ def preview_edit(id):
     return render_template("admin/preview_edit.html", form=form, preview=preview)
 
 
-@admin.route("/user/list/")
-def user_list():
+@admin.route("/user/list/<int:page>/", methods=["GET"])
+@admin_login_req
+def user_list(page=None):
     # 会员列表
-    return render_template("admin/user_list.html")
+    if page is None:
+        page = 1
+    page_data = User.query.order_by(
+        User.id.desc()
+    ).paginate(page=page, per_page=10)
+    return render_template("admin/user_list.html", page_data=page_data)
 
 
-@admin.route("/user/view/")
-def user_view():
-    # 会员
-    return render_template("admin/user_view.html")
+@admin.route("/user/del/<int:id>/", methods=["GET"])
+@admin_login_req
+def user_del(id=None):
+    # 删除用户
+    user = User.query.get_or_404(int(id))
+    db.session.delete(user)
+    db.session.commit()
+    flash("删除用户成功！", "ok")
+    return redirect(url_for('admin.user_list', page=1))
+
+
+@admin.route("/user/view/<int:id>/", methods=["GET"])
+@admin_login_req
+def user_view(id=None):
+    # 用户详情
+    from_page = request.args.get('fp')
+    if not from_page:
+        from_page = 1
+    user = User.query.get_or_404(int(id))
+    return render_template("admin/user_view.html", user=user, from_page=from_page)
 
 
 @admin.route("/comment/list/")
