@@ -8,7 +8,7 @@ from flask import render_template, url_for, redirect, flash, session, request
 from . import admin
 from app.admin.forms import LoginForm, TagForm, MovieForm, PreviewForm
 from functools import wraps
-from app.models import Admin, Tag, Movie, Preview, User
+from app.models import Admin, Tag, Movie, Preview, User, Comment
 from app import db, app
 from werkzeug.utils import secure_filename
 
@@ -372,10 +372,34 @@ def user_view(id=None):
     return render_template("admin/user_view.html", user=user, from_page=from_page)
 
 
-@admin.route("/comment/list/")
-def comment_list():
+@admin.route("/comment/list/<int:page>/", methods=["GET"])
+@admin_login_req
+def comment_list(page=None):
     # 评论列表
-    return render_template("admin/comment_list.html")
+    if page is None:
+        page = 1
+    page_data = Comment.query.join(
+        Movie
+    ).join(
+        User
+    ).filter(
+        Movie.id == Comment.movie_id,
+        User.id == Comment.user_id
+    ).order_by(
+        Comment.id.desc()
+    ).paginate(page=page, per_page=10)
+    return render_template("admin/comment_list.html", page_data=page_data)
+
+
+@admin.route("/comment/del/<int:id>/", methods=["GET"])
+@admin_login_req
+def comment_del(id=None):
+    # 删除评论
+    comment = Comment.query.get_or_404(int(id))
+    db.session.delete(comment)
+    db.session.commit()
+    flash("删除评论成功！", "ok")
+    return redirect(url_for('admin.comment_list', page=1))
 
 
 @admin.route("/moviecol/list/")
