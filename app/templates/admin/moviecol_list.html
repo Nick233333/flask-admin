@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>微电影管理系统</title>
+    <title>收藏管理微电影管理系统</title>
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="{{ url_for('static', filename='base/images/logo.png') }}">
@@ -319,6 +319,14 @@
                             </div>
                         </div>
                         <div class="box-body table-responsive no-padding">
+                            {% for msg in get_flashed_messages(category_filter=["ok"]) %}
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                </button>
+                                <h4><i class="icon fa fa-check"></i> 操作成功</h4>
+                                {{ msg }}
+                            </div>
+                            {% endfor %}
                             <table class="table table-hover">
                                 <tbody>
                                 <tr>
@@ -328,30 +336,24 @@
                                     <th>添加时间</th>
                                     <th>操作事项</th>
                                 </tr>
+                                {% for v in page_data.items %}
                                 <tr>
-                                    <td>1</td>
-                                    <td>环太平洋</td>
-                                    <td>张小明</td>
-                                    <td>2017-06-01</td>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.movie.title }}</td>
+                                    <td>{{ v.user.name }}</td>
+                                    <td>{{ v.addtime }}</td>
                                     <td>
-                                        <a class="label label-success">编辑</a>
-                                        &nbsp;
-                                        <a class="label label-danger">删除</a>
+                                        <a href="{{ url_for('admin.moviecol_del',id=v.id,fp=page_data.page) }}"
+                                           class="label label-danger">删除</a>
                                     </td>
                                 </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                         <div class="box-footer clearfix">
-                            <ul class="pagination pagination-sm no-margin pull-right">
-                                <li><a href="#">首页</a></li>
-                                <li><a href="#">上一页</a></li>
-                                <li><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#">下一页</a></li>
-                                <li><a href="#">尾页</a></li>
-                            </ul>
+                            {% import "common/admin_page.html" as pg %}
+                            {{ pg.page(page_data, 'admin.tag_list') }}
                         </div>
                     </div>
                 </div>
