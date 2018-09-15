@@ -8,7 +8,7 @@ from flask import render_template, url_for, redirect, flash, session, request
 from . import admin
 from app.admin.forms import LoginForm, TagForm, MovieForm, PreviewForm, PwdForm
 from functools import wraps
-from app.models import Admin, Tag, Movie, Preview, User, Comment, Moviecol, Adminlog
+from app.models import Admin, Tag, Movie, Preview, User, Comment, Moviecol, Adminlog, Userlog
 from app import db, app
 from werkzeug.utils import secure_filename
 
@@ -466,12 +466,6 @@ def moviecol_del(id=None):
     return redirect(url_for('admin.moviecol_list', page=1))
 
 
-@admin.route("/oplog/list/")
-def oplog_list():
-    # 操作日志管理
-    return render_template("admin/oplog_list.html")
-
-
 @admin.route("/adminloginlog/list/<int:page>/", methods=["GET"])
 @admin_login_req
 def adminloginlog_list(page=None):
@@ -488,10 +482,20 @@ def adminloginlog_list(page=None):
     return render_template("admin/adminloginlog_list.html", page_data=page_data)
 
 
-@admin.route("/userloginlog/list/")
-def userloginlog_list():
-    # 会员日志列表
-    return render_template("admin/userloginlog_list.html")
+@admin.route("/userloginlog/list/<int:page>/", methods=["GET"])
+@admin_login_req
+def userloginlog_list(page=None):
+    # 用户登录日志
+    if page is None:
+        page = 1
+    page_data = Userlog.query.join(
+        User
+    ).filter(
+        User.id == Userlog.user_id,
+    ).order_by(
+        Userlog.addtime.desc()
+    ).paginate(page=page, per_page=10)
+    return render_template("admin/userloginlog_list.html", page_data=page_data)
 
 
 @admin.route("/auth/add/")

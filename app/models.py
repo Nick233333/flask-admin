@@ -184,16 +184,3 @@ class Adminlog(db.Model):
     def __repr__(self):
         return "<Adminlog %r>" % self.id
 
-
-# 操作日志
-class Oplog(db.Model):
-    __tablename__ = "oplog"
-    __table_args__ = {"useexisting": True}
-    id = db.Column(db.Integer, primary_key=True)  # 编号
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))  # 所属管理员
-    ip = db.Column(db.String(100))  # 操作IP
-    reason = db.Column(db.String(600))  # 操作原因
-    addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 登录时间
-
-    def __repr__(self):
-        return "<Oplog %r>" % self.id
