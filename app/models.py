@@ -178,6 +178,7 @@ class Adminlog(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # 编号
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))  # 所属管理员
     ip = db.Column(db.String(100))  # 登录IP
+    type = db.Column(db.Boolean(1))
     addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 登录时间
 
     def __repr__(self):

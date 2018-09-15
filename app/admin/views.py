@@ -8,7 +8,7 @@ from flask import render_template, url_for, redirect, flash, session, request
 from . import admin
 from app.admin.forms import LoginForm, TagForm, MovieForm, PreviewForm, PwdForm
 from functools import wraps
-from app.models import Admin, Tag, Movie, Preview, User, Comment, Moviecol
+from app.models import Admin, Tag, Movie, Preview, User, Comment, Moviecol, Adminlog
 from app import db, app
 from werkzeug.utils import secure_filename
 
@@ -22,6 +22,15 @@ def admin_login_req(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+
+@admin.context_processor
+def tpl_extra():
+    # 上下应用处理器
+    data = dict(
+        online_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    )
+    return data
 
 
 def change_filename(filename):
@@ -61,6 +70,13 @@ def login():
         if not admin.check_pwd(data["pwd"]):
             flash(u"密码错误!", "err")
             return redirect(url_for("admin.login"))
+        adminlog = Adminlog(
+            admin_id=admin.id,
+            ip=request.remote_addr,
+            type=1
+        )
+        db.session.add(adminlog)
+        db.session.commit()
         session["admin"] = data["account"]
         session["admin_id"] = admin.id
         return redirect(request.args.get("next") or url_for("admin.index"))
@@ -70,6 +86,13 @@ def login():
 @admin.route("/logout")
 def logout():
     # 后台注销登录
+    adminlog = Adminlog(
+        admin_id=session['admin_id'],
+        ip=request.remote_addr,
+        type=0
+    )
+    db.session.add(adminlog)
+    db.session.commit()
     session.pop("admin", None)
     session.pop("admin_id", None)
     return redirect(url_for("admin.login"))
@@ -449,10 +472,20 @@ def oplog_list():
     return render_template("admin/oplog_list.html")
 
 
-@admin.route("/adminloginlog/list/")
-def adminloginlog_list():
-    # 管理员日志列表
-    return render_template("admin/adminloginlog_list.html")
+@admin.route("/adminloginlog/list/<int:page>/", methods=["GET"])
+@admin_login_req
+def adminloginlog_list(page=None):
+    # 后台登录日志
+    if page is None:
+        page = 1
+    page_data = Adminlog.query.join(
+        Admin
+    ).filter(
+        Admin.id == Adminlog.admin_id,
+    ).order_by(
+        Adminlog.addtime.desc()
+    ).paginate(page=page, per_page=10)
+    return render_template("admin/adminloginlog_list.html", page_data=page_data)
 
 
 @admin.route("/userloginlog/list/")

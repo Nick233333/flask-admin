@@ -324,28 +324,29 @@
                                 <tr>
                                     <th>编号</th>
                                     <th>管理员</th>
-                                    <th>登录时间</th>
-                                    <th>登录IP</th>
+                                    <th>时间</th>
+                                    <th>IP</th>
+                                    <th>类型</th>
                                 </tr>
+                                {% for v in page_data.items %}
                                 <tr>
-                                    <td>1</td>
-                                    <td>admin</td>
-                                    <td>2017-06-01</td>
-                                    <td>192.168.4.1</td>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.admin.name }}</td>
+                                    <td>{{ v.addtime }}</td>
+                                    <td>{{ v.ip }}</td>
+                                    {% if v.type == 1 %}
+                                    <td>登录</td>
+                                    {% else %}
+                                    <td>退出</td>
+                                    {% endif %}
                                 </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                         <div class="box-footer clearfix">
-                            <ul class="pagination pagination-sm no-margin pull-right">
-                                <li><a href="#">首页</a></li>
-                                <li><a href="#">上一页</a></li>
-                                <li><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#">下一页</a></li>
-                                <li><a href="#">尾页</a></li>
-                            </ul>
+                            {% import "common/admin_page.html" as pg %}
+                            {{ pg.page(page_data, 'admin.tag_list') }}
                         </div>
                     </div>
                 </div>
