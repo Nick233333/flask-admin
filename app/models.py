@@ -161,7 +161,6 @@ class Admin(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))  # 所属角色
     addtime = db.Column(db.DateTime, index=True, default=datetime.now)  # 添加时间
     adminlogs = db.relationship("Adminlog", backref='admin')  # 管理员登录日志外键关系关联
-    oplogs = db.relationship("Oplog", backref='admin')  # 管理员操作日志外键关系关联
 
     def __repr__(self):
         return "<Admin %r>" % self.name

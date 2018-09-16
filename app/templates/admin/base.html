@@ -9,56 +9,40 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='base/images/logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='fonts/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='ionicons/css/ionicons.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin/dist/css/AdminLTE.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin/dist/css/skins/_all-skins.min.css') }}">
-    <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='admin/plugins/datepicker/datepicker3.css') }}">
-    <style>
-        * {
-            font-family: "Microsoft YaHei";
-        }
-
-        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
-            vertical-align: middle;
-            text-align: center;
-        }
-
-    </style>
+    {% block css %} {% endblock %}
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <header class="main-header">
-        <a href="index.html" class="logo">
+        <a href="{{ url_for('admin.index') }}" class="logo">
+            <span class="logo-mini">菜单</span>
             <span class="logo-lg">微电影管理系统</span>
         </a>
         <nav class="navbar navbar-static-top">
-            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <a href="javascript:;" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                 <span class="sr-only">下拉菜单</span>
             </a>
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
                     <li class="dropdown user user-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="../static/admin/dist/img/user2-160x160.jpg"
-                                 class="user-image" alt="User Image">
-                            <span class="hidden-xs">xxx</span>
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="hidden-xs">{{ session['admin'] }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li class="user-header">
-                                <img src="../static/admin/dist/img/user2-160x160.jpg"
-                                     class="img-circle" alt="User Image">
                                 <p>
-                                    xxx
-                                    <small>2017-06-01</small>
+                                    {{ session['admin'] }}
+                                    <small>{{ online_time }}</small>
                                 </p>
                             </li>
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="pwd.html" class="btn btn-default btn-flat">修改密码</a>
+                                    <a href="{{ url_for('admin.pwd') }}" class="btn btn-default btn-flat">修改密码</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="login.html" class="btn btn-default btn-flat">退出系统</a>
+                                    <a href="{{ url_for('admin.logout') }}" class="btn btn-default btn-flat">退出系统</a>
                                 </div>
                             </li>
                         </ul>
@@ -69,30 +53,10 @@
     </header>
     <aside class="main-sidebar">
         <section class="sidebar">
-            <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="../static/admin/dist/img/user2-160x160.jpg" class="img-circle"
-                         alt="User Image">
-                </div>
-                <div class="pull-left info">
-                    <p>用户xxx</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
-                </div>
-            </div>
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="搜索...">
-                    <span class="input-group-btn">
-                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i
-                                class="fa fa-search"></i>
-                        </button>
-                    </span>
-                </div>
-            </form>
             <ul class="sidebar-menu">
                 <li class="header">管理菜单</li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-home" aria-hidden="true"></i>
                         <span>首页</span>
                         <span class="label label-primary pull-right">1</span>
@@ -106,7 +70,7 @@
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-tags" aria-hidden="true"></i>
                         <span>标签管理</span>
                         <span class="label label-primary pull-right">2</span>
@@ -118,118 +82,113 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for('admin.tag_list') }}">
+                            <a href="{{ url_for('admin.tag_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 标签列表
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-file-video-o" aria-hidden="true"></i>
                         <span>电影管理</span>
                         <span class="label label-primary pull-right">2</span>
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="movie_add.html">
+                            <a href="{{ url_for('admin.movie_add') }}">
                                 <i class="fa fa-circle-o"></i> 添加电影
                             </a>
                         </li>
                         <li>
-                            <a href="movie_list.html">
+                            <a href="{{ url_for('admin.movie_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 电影列表
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-film" aria-hidden="true"></i>
                         <span>预告管理</span>
                         <span class="label label-primary pull-right">2</span>
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="preview_add.html">
+                            <a href="{{ url_for('admin.preview_add') }}">
                                 <i class="fa fa-circle-o"></i> 添加预告
                             </a>
                         </li>
                         <li>
-                            <a href="preview_list.html">
+                            <a href="{{ url_for('admin.preview_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 预告列表
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-users" aria-hidden="true"></i>
-                        <span>会员管理</span>
+                        <span>用户管理</span>
                         <span class="label label-primary pull-right">1</span>
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="user_list.html">
-                                <i class="fa fa-circle-o"></i> 会员列表
+                            <a href="{{ url_for('admin.user_list', page=1) }}">
+                                <i class="fa fa-circle-o"></i> 用户列表
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-comments" aria-hidden="true"></i>
                         <span>评论管理</span>
                         <span class="label label-primary pull-right">1</span>
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="comment_list.html">
+                            <a href="{{ url_for('admin.comment_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 评论列表
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-heart" aria-hidden="true"></i>
                         <span>收藏管理</span>
                         <span class="label label-primary pull-right">1</span>
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="moviecol_list.html">
+                            <a href="{{ url_for('admin.moviecol_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 收藏列表
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-file-text" aria-hidden="true"></i>
                         <span>日志管理</span>
-                        <span class="label label-primary pull-right">3</span>
+                        <span class="label label-primary pull-right">2</span>
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="oplog_list.html">
-                                <i class="fa fa-circle-o"></i> 操作日志列表
-                            </a>
-                        </li>
-                        <li>
-                            <a href="adminloginlog_list.html">
+                            <a href="{{ url_for('admin.adminloginlog_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 管理员登录日志列表
                             </a>
                         </li>
                         <li>
-                            <a href="userloginlog_list.html">
+                            <a href="{{ url_for('admin.userloginlog_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 会员登录日志列表
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-lock" aria-hidden="true"></i>
                         <span>权限管理</span>
                         <span class="label label-primary pull-right">2</span>
@@ -248,7 +207,7 @@
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-user-secret" aria-hidden="true"></i>
                         <span>角色管理</span>
                         <span class="label label-primary pull-right">2</span>
@@ -267,7 +226,7 @@
                     </ul>
                 </li>
                 <li class="treeview">
-                    <a href="#">
+                    <a href="javascript:;">
                         <i class="fa fa-user-circle" aria-hidden="true"></i>
                         <span>管理员管理</span>
                         <span class="label label-primary pull-right">2</span>
@@ -289,8 +248,7 @@
         </section>
     </aside>
     <div class="content-wrapper">
-        <!--内容-->
-        <!--内容-->
+        {% block content %} {% endblock %}
     </div>
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
@@ -298,15 +256,12 @@
         </div>
         <strong>粤ICP备17086092号</strong>
     </footer>
-    <div class="control-sidebar-bg"></div>
 </div>
 <script src="{{ url_for('static', filename='admin/plugins/jQuery/jQuery-2.2.0.min.js') }}"></script>
 <script src="{{ url_for('static', filename='admin/bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='admin/plugins/slimScroll/jquery.slimscroll.min.js') }}"></script>
-<script src="{{ url_for('static', filename='admin/plugins/fastclick/fastclick.js') }}"></script>
 <script src="{{ url_for('static', filename='admin/dist/js/app.min.js') }}"></script>
 <script src="//cdn.bootcss.com/holder/2.9.4/holder.min.js"></script>
-<script src="{{ url_for('static', filename='admin/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
-<script src="{{ url_for('static', filename='admin/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js') }}" charset="UTF-8"></script>
+{% block js %} {% endblock %}
 </body>
 </html>
