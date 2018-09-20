@@ -191,14 +191,13 @@ def movie_add():
         if res == False:
             flash(u"图片类型不支持！", "err")
             return render_template("admin/movie_add.html", form=form)
-        file_url = secure_filename(form.url.data.filename)
-        file_logo = secure_filename(form.logo.data.filename)
+        file_url = secure_filename(change_filename(form.url.data.filename))
+        file_logo = secure_filename(change_filename(form.logo.data.filename))
         check_upload_dir()
-        url = change_filename(file_url)
-        logo = change_filename(file_logo)
+
         # 保存
-        form.url.data.save(app.config['UPLOAD_DIR'] + url)
-        form.logo.data.save(app.config['UPLOAD_DIR'] + logo)
+        form.url.data.save(app.config['UPLOAD_DIR'] + file_url)
+        form.logo.data.save(app.config['UPLOAD_DIR'] + file_logo)
         # url,logo为上传视频,图片之后获取到的地址
         movie = Movie(
             title=data["title"],
@@ -268,8 +267,7 @@ def movie_edit(id=None):
         check_upload_dir()
         # 上传视频
         if form.url.data != "":
-            file_url = secure_filename(form.url.data.filename)
-            movie.url = change_filename(file_url)
+            movie.url = secure_filename(change_filename(form.url.data.filename))
             form.url.data.save(app.config['UPLOAD_DIR'] + movie.url)
         # 上传图片
         if form.logo.data != "":
@@ -277,8 +275,7 @@ def movie_edit(id=None):
             if res == False:
                 flash(u"图片类型不支持！", "err")
                 return render_template("admin/movie_edit.html", form=form, movie=movie)
-            file_logo = secure_filename(form.logo.data.filename)
-            movie.logo = change_filename(file_logo)
+            movie.logo = secure_filename(change_filename(form.logo.data.filename))
             form.logo.data.save(app.config['UPLOAD_DIR'] + movie.logo)
 
         movie.star = data["star"]
@@ -306,13 +303,12 @@ def preview_add():
         if res == False:
             flash(u"图片类型不支持！", "err")
             return render_template("admin/preview_add.html", form=form)
-        file_logo = secure_filename(form.logo.data.filename)
+        file_logo = secure_filename(change_filename(form.logo.data.filename))
         check_upload_dir()
-        logo = change_filename(file_logo)
-        form.logo.data.save(app.config['UPLOAD_DIR'] + logo)
+        form.logo.data.save(app.config['UPLOAD_DIR'] + file_logo)
         preview = Preview(
             title=data["title"],
-            logo=logo
+            logo=file_logo
         )
         db.session.add(preview)
         db.session.commit()
@@ -361,8 +357,7 @@ def preview_edit(id):
             if res == False:
                 flash(u"图片类型不支持！", "err")
                 return render_template("admin/preview_edit.html", form=form, preview=preview)
-            file_logo = secure_filename(form.logo.data.filename)
-            preview.logo = change_filename(file_logo)
+            preview.logo = secure_filename(change_filename(form.logo.data.filename))
             form.logo.data.save(app.config['UPLOAD_DIR'] + preview.logo)
         preview.title = data["title"]
         db.session.add(preview)
