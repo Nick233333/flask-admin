@@ -195,12 +195,12 @@
                     </a>
                     <ul class="treeview-menu">
                         <li>
-                            <a href="auth_add.html">
+                            <a href="{{ url_for('admin.auth_add') }}">
                                 <i class="fa fa-circle-o"></i> 添加权限
                             </a>
                         </li>
                         <li>
-                            <a href="auth_list.html">
+                            <a href="{{ url_for('admin.auth_list', page=1) }}">
                                 <i class="fa fa-circle-o"></i> 权限列表
                             </a>
                         </li>
