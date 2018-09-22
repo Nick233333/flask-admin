@@ -26,7 +26,11 @@ def admin_login_req(f):
 
 @admin.context_processor
 def tpl_extra():
-    # 上下应用处理器
+    '''
+    上下应用处理器
+    每个请求方法处理完会调用此方法
+    函数的返回结果必须是dict，dict 中的 key 可以模板中获取到
+    '''
     data = dict(
         online_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     )
