@@ -1,7 +1,6 @@
 import os
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 
 
 app = Flask(__name__)
@@ -14,7 +13,6 @@ app.config['SECRET_KEY'] = 'flask-movie'
 app.config['UPLOAD_DIR'] = os.path.join(os.path.abspath(os.path.dirname(__file__)), "static/uploads/")
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 
 from app.home import home as home_blueprint
