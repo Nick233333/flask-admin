@@ -6,9 +6,9 @@ from datetime import datetime
 
 from flask import render_template, url_for, redirect, flash, session, request
 from . import admin
-from app.admin.forms import LoginForm, TagForm, MovieForm, PreviewForm, PwdForm, AuthForm
+from app.admin.forms import LoginForm, TagForm, MovieForm, PreviewForm, PwdForm, AdminForm
 from functools import wraps
-from app.models import Admin, Tag, Movie, Preview, User, Comment, Moviecol, Adminlog, Userlog, Auth
+from app.models import Admin, Tag, Movie, Preview, User, Comment, Moviecol, Adminlog, Userlog
 from app import db, app
 from werkzeug.utils import secure_filename
 
@@ -550,25 +550,32 @@ def auth_edit(id=None):
     return render_template("admin/auth_edit.html", form=form, auth=auth)
 
 
-@admin.route("/role/add/")
-def role_add():
-    # 添加角色
-    return render_template("admin/role_add.html")
-
-
-@admin.route("/role/list/")
-def role_list():
-    # 角色列表
-    return render_template("admin/role_list.html")
-
-
-@admin.route("/admin/add/")
+@admin.route("/admin/add/", methods=["GET", "POST"])
+@admin_login_req
 def admin_add():
     # 添加管理员
-    return render_template("admin/admin_add.html")
+    form = AdminForm()
+    from werkzeug.security import generate_password_hash
+    if form.validate_on_submit():
+        data = form.data
+        admin = Admin(
+            name=data["name"],
+            pwd=generate_password_hash(data["pwd"]),
+            is_super=1
+        )
+        db.session.add(admin)
+        db.session.commit()
+        flash("添加管理员成功！", "ok")
+    return render_template("admin/admin_add.html", form=form)
 
 
-@admin.route("/admin/list/")
-def admin_list():
+@admin.route("/admin/list/<int:page>/", methods=["GET"])
+@admin_login_req
+def admin_list(page=None):
     # 管理员列表
-    return render_template("admin/admin_list.html")
+    if page is None:
+        page = 1
+    page_data = Admin.query.order_by(
+        Admin.addtime.desc()
+    ).paginate(page=page, per_page=10)
+    return render_template("admin/admin_list.html", page_data=page_data)

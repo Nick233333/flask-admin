@@ -51,15 +51,6 @@
                                         </div>
                                     {% endfor %}
                                 </div>
-                                <div class="form-group">
-                                    <label for="input_role_id">{{ form.role_id.label }}</label>
-                                    {{ form.role_id }}
-                                    {% for err in form.role_id.errors %}
-                                        <div class="col-md-12">
-                                            <p style="color: red">{{ err }}</p>
-                                        </div>
-                                    {% endfor %}
-                                </div>
                             </div>
                             <div class="box-footer">
                                 {{ form.csrf_token }}

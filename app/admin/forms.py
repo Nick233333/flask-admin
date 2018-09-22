@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FileField, SelectField, TextAreaField
-from wtforms.validators import DataRequired, ValidationError
+from wtforms.validators import DataRequired, ValidationError, EqualTo
 from app.models import Admin, Tag
 
 
@@ -240,29 +240,42 @@ class PreviewForm(FlaskForm):
     )
 
 
-class AuthForm(FlaskForm):
+class AdminForm(FlaskForm):
     name = StringField(
-        label="权限名称",
+        label="管理员名称",
         validators=[
-            DataRequired("权限名称不能为空！")
+            DataRequired("管理员名称不能为空！")
         ],
-        description="权限名称",
+        description="管理员名称",
         render_kw={
             "class": "form-control",
-            "placeholder": "请输入权限名称！"
+            "placeholder": "请输入管理员名称！",
         }
     )
-    url = StringField(
-        label="权限地址",
+    pwd = PasswordField(
+        label="管理员密码",
         validators=[
-            DataRequired("权限地址不能为空！")
+            DataRequired("管理员密码不能为空！")
         ],
-        description="权限地址",
+        description="管理员密码",
         render_kw={
             "class": "form-control",
-            "placeholder": "请输入权限地址！"
+            "placeholder": "请输入管理员密码！",
         }
     )
+    repwd = PasswordField(
+        label="管理员重复密码",
+        validators=[
+            DataRequired("管理员重复密码不能为空！"),
+            EqualTo('pwd', message="两次密码不一致！")
+        ],
+        description="管理员重复密码",
+        render_kw={
+            "class": "form-control",
+            "placeholder": "请输入管理员重复密码！",
+        }
+    )
+
     submit = SubmitField(
         '提交',
         render_kw={
