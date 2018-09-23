@@ -1,6 +1,8 @@
 import os
-from flask import Flask, render_template
+import redis
+from flask import Flask, render_template, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
 
 
 app = Flask(__name__)
@@ -13,6 +15,14 @@ app.config['SECRET_KEY'] = 'flask-movie'
 app.config['UPLOAD_DIR'] = os.path.join(os.path.abspath(os.path.dirname(__file__)), "static/uploads/")
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 db = SQLAlchemy(app)
+
+app.config['SESSION_TYPE'] = 'redis'  # session类型为redis
+app.config['SESSION_PERMANENT'] = False  # 如果设置为True，则关闭浏览器session就失效。
+app.config['SESSION_USE_SIGNER'] = True  # 是否对发送到浏览器上session的cookie值进行加密
+app.config['SESSION_KEY_PREFIX'] = 'flask:'  # 保存到session中的值的前缀
+app.config['SESSION_REDIS'] = redis.Redis(host='127.0.0.1', port='6379', password='redis') # 用于连接redis的配置
+
+Session(app)
 
 
 from app.home import home as home_blueprint
