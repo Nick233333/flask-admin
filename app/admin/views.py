@@ -202,12 +202,11 @@ def movie_add():
         # 保存
         form.url.data.save(app.config['UPLOAD_DIR'] + file_url)
         form.logo.data.save(app.config['UPLOAD_DIR'] + file_logo)
-        # url,logo为上传视频,图片之后获取到的地址
         movie = Movie(
             title=data["title"],
-            url=url,
+            url=file_url,
             info=data["info"],
-            logo=logo,
+            logo=file_logo,
             star=int(data["star"]),
             playnum=0,
             commentnum=0,
@@ -217,9 +216,11 @@ def movie_add():
             length=data["length"]
         )
         db.session.add(movie)
-        db.session.commit()
-        flash(u"添加电影成功！", "ok")
-        return redirect(url_for('admin.movie_list', page=1))
+        try:
+            db.session.commit()
+            flash(u"添加电影成功！", "ok")
+        except:
+            flash(u"添加电影失败！", "err")
     return render_template("admin/movie_add.html", form=form)
 
 
@@ -315,9 +316,12 @@ def preview_add():
             logo=file_logo
         )
         db.session.add(preview)
-        db.session.commit()
-        flash(u"添加预告成功！", "ok")
-        return redirect(url_for('admin.preview_add'))
+        try:
+            db.session.commit()
+            flash(u"添加预告成功！", "ok")
+        except:
+            flash(u"添加预告失败！", "err")
+
     return render_template("admin/preview_add.html", form=form)
 
 
@@ -568,8 +572,11 @@ def admin_add():
             is_super=1
         )
         db.session.add(admin)
-        db.session.commit()
-        flash("添加管理员成功！", "ok")
+        try:
+            db.session.commit()
+            flash(u"添加管理员成功！", "ok")
+        except:
+            flash(u"添加管理员失败！", "err")
     return render_template("admin/admin_add.html", form=form)
 
 
