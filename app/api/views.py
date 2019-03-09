@@ -12,9 +12,19 @@ def test1():
     print(request.get_data())
     print(request.get_json())
     print(request.data)
-    return jsonify({'code': 200, 'msg': 'success', 'data': {'user': {'name' : name, 'num': num, 'age': age}}})
+    return jsonify({'code': 200, 'msg': 'success', 'data': {'user': {'name': name, 'num': num, 'age': age}}})
 
 
 @api.route("/json/")
 def test2():
     return json.dumps(['json', '1', 2])
+
+
+@api.route("/put", methods=["put", "patch"])
+def test3():
+    return json.dumps([request.form.get("test3", type=str, default='aaa')])
+
+
+@api.route("/delete", methods=["delete"])
+def test4():
+    return json.dumps({'test4': request.form.get("test4", type=str, default='4')})
