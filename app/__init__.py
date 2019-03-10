@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.debug = True
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://nick:nick@localhost/flask-movie"
