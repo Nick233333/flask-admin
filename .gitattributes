@@ -1,0 +1,6 @@
+* text=auto
+
+*.css linguist-language=python
+*.js linguist-language=python
+*.html linguist-language=python
+*.md linguist-language=python
